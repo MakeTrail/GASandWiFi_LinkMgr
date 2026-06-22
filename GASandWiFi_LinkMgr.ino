@@ -1,6 +1,6 @@
 // サンプルプログラムだよ
 #include <WiFi.h>
-#include "GASandWiFi_LinkMgr/GASandWiFi_LinkMgr.h"
+#include "GASandWiFi_LinkMgr.h"
 
 #define CONFIG_PIN 4  
 
@@ -23,7 +23,7 @@ void setup() {
       configMgr.connectWiFi();
       
       // ★ 起動時にスプシの1行目（ヘッダー）を確定させる
-      configMgr.sendHeaderToGAS("日時,デバイス名,起動時間(ms),センサー値1,センサー値2");
+      configMgr.sendHeaderToGAS("日時,デバイス名,起動時間(ms),センサー値1,センサー値2,センサー値3");
   }
 }
 
@@ -33,7 +33,7 @@ void loop() {
     lastLogTime = currentMillis;
 
     // ★ 送りたいデータを全部まとめたCSVを引数で渡して送信！
-    String data = configMgr.statusStr + "," + String(millis()) + ",24.5,58.2";
+    String data = configMgr.statusStr + "," + String(millis()) + ",24.5,58.2,33.1,test8";
     configMgr.sendDataToGAS(data); 
   }
 }

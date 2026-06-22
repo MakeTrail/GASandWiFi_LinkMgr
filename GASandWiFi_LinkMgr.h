@@ -46,10 +46,10 @@ private:
                 <option value="0">1. モバイルルータ１</option>
                 <option value="1">2. モバイルルータ２</option>
                 <option value="2">3. モバイルルータ３</option>
-                <option value="3">4. 校内IoT_AP１</option>
-                <option value="4">5. 校内IoT_AP２</option>
-                <option value="5">6. 校内IoT_AP３</option>
-                <option value="6">7. 予備用AP</option>
+                <option value="3">4. モバイルルータ４</option>
+                <option value="4">5. 校内IoT_AP１</option>
+                <option value="5">6. 校内IoT_AP２</option>
+                <option value="6">7. 私物スマホ</option>
                 <option value="7">8. 臨時アクセスポイント</option>
             </select>
         </div>
@@ -180,14 +180,16 @@ public:
     void sendHeaderToGAS(String csvHeaderTitle) {
         if (WiFi.status() != WL_CONNECTED) return;
 
+        // ★ マジックナンバーを廃止し、WebUIから保存されたgasIdを使う本来の形に戻す
         String url = "https://script.google.com/macros/s/" + gasId + "/exec";
         HTTPClient http;
         http.setFollowRedirects(HTTPC_DISABLE_FOLLOW_REDIRECTS); // 302止めで高速化
         http.begin(url);
         http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        http.addHeader("X-Type", "header"); // GAS側でヘッダーと判別するためのカスタムヘッダー
         
-        int httpCode = http.POST(csvHeaderTitle);
+        // データの先頭に「HEADER:」という目印をつけて、普通にPOSTする
+        String payload = "HEADER:" + csvHeaderTitle;
+        int httpCode = http.POST(payload);
         http.end();
     }
 
@@ -195,6 +197,7 @@ public:
     void sendDataToGAS(String csvPayload) {
         if (WiFi.status() != WL_CONNECTED) return;
 
+        // ★ マジックナンバーを廃止し、WebUIから保存されたgasIdを使う本来の形に戻す
         String url = "https://script.google.com/macros/s/" + gasId + "/exec";
         HTTPClient http;
         http.setFollowRedirects(HTTPC_DISABLE_FOLLOW_REDIRECTS); // 302止めで高速化
@@ -205,5 +208,4 @@ public:
         http.end();
     }
 };
-
 #endif // GAS_AND_WIFI_LINK_MGR_H
